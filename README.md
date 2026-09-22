@@ -75,7 +75,7 @@ It is pre-loaded with knowledge about **AI Intime** — an enterprise knowledge 
 │  3. Context Retrieval ──►  ChromaDB (semantic docs)            │
 │                        └►  Neo4j (entity relationships)        │
 │                                                                │
-│  4. LLM Generation   ──►  Ollama (LLaMA 3.2 on-premise)       │
+│  4. LLM Generation   ──►  Ollama (LLaMA 3.2 on-premise)        │
 │                                                                │
 │  5. Response + Metadata (intent, sentiment, escalation flag)   │
 └────────────────────────────────────────────────────────────────┘
@@ -96,12 +96,12 @@ It is pre-loaded with knowledge about **AI Intime** — an enterprise knowledge 
 
               ┌───────────────────────────────────────┐
               │         Celery Background Worker       │
-              │                                       │
+              │                                        │
               │  POST /ingest → Celery Task:           │
               │    1. add_document() → ChromaDB        │
               │    2. extract_keywords() → NLP         │
               │    3. add_entity() + add_relationship()│
-              │       → Neo4j                         │
+              │       → Neo4j                          │
               └──────────────┬────────────────────────┘
                              │ Broker
                              ▼
@@ -112,7 +112,7 @@ It is pre-loaded with knowledge about **AI Intime** — an enterprise knowledge 
                     └──────────────────┘
 
               ┌───────────────────────────────────────┐
-              │         Ollama (runs on HOST machine)  │
+              │         Ollama (runs on HOST machine) │
               │         Port 11434                    │
               │                                       │
               │  - Model: llama3.2 (default)          │
