@@ -1,0 +1,60 @@
+services:
+  # Main Flask App
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    environment:
+      - FLASK_ENV=development
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - chromadb
+      - neo4j
+    command: flask run --host=0.0.0.0
+
+  # Celery Worker (Background Tasks)
+  celery:
+    build: .
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    command: celery -A app.tasks.jobs worker --loglevel=info
+
+  # Redis (Task Queue)
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  # ChromaDB (Vector Search)
+  chromadb:
+    image: chromadb/chroma:latest
+    ports:
+      - "8001:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+
+  # Neo4j (Knowledge Graph)
+  neo4j:
+    image: neo4j:5-community
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      - NEO4J_AUTH=neo4j/password123
+    volumes:
+      - neo4j_data:/data
+  # NOTE: Ollama removed - run it directly on Windows for better performance!
+  # Install from: https://ollama.com/download
+  # Then run: ollama pull llama3.2
+
+volumes:
+  chroma_data:
+  neo4j_data:
